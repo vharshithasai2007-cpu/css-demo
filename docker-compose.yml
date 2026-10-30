@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      CSS_PORTAL_DB_PATH: /app/data/css_demo.db
+      CSS_PORTAL_SECRET_KEY: ${CSS_PORTAL_SECRET_KEY:-dev-portal-secret-change-me}
+      CSS_PORTAL_TOKEN_MINUTES: ${CSS_PORTAL_TOKEN_MINUTES:-120}
+      CSS_PORTAL_SIM_STEP_SECONDS: ${CSS_PORTAL_SIM_STEP_SECONDS:-45}
+      CSS_PORTAL_ENV: ${CSS_PORTAL_ENV:-development}
+      CSS_PORTAL_SIM_ENABLED: ${CSS_PORTAL_SIM_ENABLED:-true}
+      MOCK_CSS_AUTOGEN: ${MOCK_CSS_AUTOGEN:-false}
+      CSS_PORTAL_ADMIN_KEY: ${CSS_PORTAL_ADMIN_KEY:-}
+    ports:
+      - "8101:8101"
+    volumes:
+      - css_demo_data:/app/data
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_CSS_PROXY_TARGET: http://backend:8101
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  css_demo_data:
